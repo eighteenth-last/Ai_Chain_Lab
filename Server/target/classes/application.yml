@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+# 日志配置 - 精简模式
+logging:
+  level:
+    root: ERROR
+    com.gpt.server: INFO
+    org.springframework: ERROR
+    org.mybatis: INFO
+    com.zaxxer.hikari: ERROR
+    org.apache.catalina: ERROR
+    org.redisson: ERROR
+    io.netty: ERROR
+  pattern:
+    console: "%clr(%d{HH:mm:ss}){faint} %clr(%-5level) %clr(%logger{20}){cyan} %clr(:){faint} %msg%n"
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB   # 修改上传大小限制
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8  # 时区
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/ai_chain_lab?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&tinyInt1isBit=false&allowLoadLocalInfile=true&allowLocalInfile=true&allowUrlInLocalInfile=true
+    username: root
+    password: qwer4321
+
+    hikari:
+      connection-test-query: SElECT 1  # 自动检测连接
+      connection-timeout: 60000  # 数据库获取连接超时时间，默认30s
+      idle-timeout: 5000000  # 空闲连接存活最大时间，默认30min
+      max-lifetime: 5400000  # 池中连接最大空闲时间，默认30min
+      maximum-pool-size: 12  # 连接池最大连接数 ，默认10
+      minimum-idle: 12  #最小空闲连接数
+      pool-name: SPHHikariPool   # 连接池名称
+
+# 打印生成的DDL，便于测试
+mybatis-plus:
+  config-location:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+
+# SpringDoc 配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  packages-to-scan: com.gpt.server.Controller
+  default-flat-param-object: true
+
+# Knife4j 配置
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+
+minio:
+  end-point: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin123
+  bucket-name: onlinebucket
+  region: cn-beijing-1
