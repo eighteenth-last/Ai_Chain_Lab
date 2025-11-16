@@ -131,7 +131,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         questionLambdaQueryWrapper.eq(Question::getCategoryId,id);
         Long count = questionMapper.selectCount(questionLambdaQueryWrapper);
         if (count() > 0){
-            throw new RuntimeException("id= %s 的分类下关联有题目，题目数量为 %s，不能删除！".formatted(id,count));
+            throw new RuntimeException("id= %s 的分类下关联有题目，题目数量为 %s，不能被删除！".formatted(id,count));
         }
         // 进行删除分类
         removeById(id);
