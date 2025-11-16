@@ -17,4 +17,16 @@ public interface CategoryService extends IService<Category> {
 
     // 查询分类列表及所有列表
     List<Category> findCategoryList();
+
+    // 查询分类树列表
+    List<Category> findCategoryTreeList();
+
+    // 保存分类
+    void saveCategory(Category category);
+
+    // 修改分类
+    void updateCategory(Category category);
+
+    // 删除分类
+    void removeCategory(Long id);
 }
