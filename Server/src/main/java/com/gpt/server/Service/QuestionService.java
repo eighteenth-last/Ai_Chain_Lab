@@ -1,7 +1,9 @@
 package com.gpt.server.Service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gpt.server.Entity.Question;
+import com.gpt.server.Vo.QuestionQueryVo;
 
 /**
  * @BelongsProject: Server
@@ -13,5 +15,9 @@ import com.gpt.server.Entity.Question;
  */
 public interface QuestionService extends IService<Question> {
 
+    // 查询问题列表分页
+    void queryQuestionListPage(Page<Question> questionPage, QuestionQueryVo questionQueryVo);
 
-} 
+    // java代码进行处理
+    void queryQuestionListByStream(Page<Question> questionPage, QuestionQueryVo questionQueryVo);
+}

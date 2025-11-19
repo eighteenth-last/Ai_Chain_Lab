@@ -3,5 +3,54 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gpt.server.Mapper.QuestionMapper">
-<!--    <select id="selectQuestionCountCategory" resultType="java.util.Map"></select>-->
+    <!--
+        不能用 resultType ，因为是多表查询，赋值的结果有嵌套关系 ，所以要用 resultMap 自定义映射
+        不能分号结尾，使用分页插件 sql+limit
+    -->
+    <resultMap id="questionMap" type="com.gpt.server.Entity.Question">
+        <!--第一层-->
+        <!--主键属性-->
+        <id column="id" property="id" />
+        <!--主非键属性，但是如果有嵌套,需要开启自动深层次映射full-->
+        <!-- 对一：答案-->
+        <association property="answer" javaType="com.gpt.server.Entity.QuestionAnswer">
+            <id column="qa_id" property="id" />
+            <result column="qa_create_time" property="createTime"/>
+            <result column="qa_update_time" property="updateTime"/>
+            <result column="qa_is_deleted" property="isDeleted"/>
+        </association>
+        <!-- 对多：选项 触发分布查询-->
+        <collection property="choices" ofType="com.gpt.server.Entity.QuestionChoice"
+            column="id" select="com.gpt.server.Mapper.QuestionChoiceMapper.selectListByQuestionId"
+        />
+    </resultMap>
+    <select id="selectQuestionPage" resultMap="questionMap">
+        SELECT
+        qs.*,
+        qa.id AS qa_id,
+        qa.answer,
+        qa.keywords,
+        qa.create_time AS qa_create_time,
+        qa.update_time AS qa_update_time,
+        qa.is_deleted AS qa_is_deleted
+        FROM questions qs
+        JOIN question_answers qa ON qs.id = qa.question_id
+        WHERE qa.is_deleted = 0
+        AND qs.is_deleted = 0
+
+        <if test="questionQueryVo.categoryId != null">
+            and qs.category_id = #{questionQueryVo.categoryId}
+        </if>
+        <if test="questionQueryVo.difficulty != null and questionQueryVo.difficulty != ''">
+            and qs.difficulty = #{questionQueryVo.difficulty}
+        </if>
+        <if test="questionQueryVo.type != null and questionQueryVo.type != ''">
+            and qs.type = #{questionQueryVo.type}
+        </if>
+        <if test="questionQueryVo.keyword != null and questionQueryVo.keyword != ''">
+            and qs.title LIKE CONCAT('%', #{questionQueryVo.keyword}, '%')
+        </if>
+
+        ORDER BY qs.create_time DESC
+    </select>
 </mapper>
