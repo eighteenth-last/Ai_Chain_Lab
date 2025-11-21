@@ -20,4 +20,9 @@ public interface QuestionService extends IService<Question> {
 
     // java代码进行处理
     void queryQuestionListByStream(Page<Question> questionPage, QuestionQueryVo questionQueryVo);
+    // 查询题目详情
+    Question queryQuestionById(Long id);
+
+    // 创建题目并保存
+    void saveQuestion(Question question);
 }

@@ -90,8 +90,9 @@ public class QuestionController {
     @Operation(summary = "根据ID查询题目详情", description = "获取指定ID的题目完整信息，包括题目内容、选项、答案等详细数据")  // API描述
     public Result<Question> getQuestionById(
             @Parameter(description = "题目ID", example = "1") @PathVariable Long id) {
-
-        return Result.success(null);
+        Question question = questionService.queryQuestionById(id);
+        log.info("查询ID为{}的题目成功，返回数据为{}", id, question);
+        return Result.success(question);
     }
     
     /**
@@ -112,8 +113,9 @@ public class QuestionController {
     @PostMapping  // 映射POST请求到/api/questions
     @Operation(summary = "创建新题目", description = "添加新的考试题目，支持选择题、判断题、简答题等多种题型")  // API描述
     public Result<Question> createQuestion(@RequestBody Question question) {
-
-        return Result.success(null);
+        questionService.saveQuestion(question);
+        log.info("创建题目成功，返回数据为{}", question);
+        return Result.success(question);
     }
     
     /**
