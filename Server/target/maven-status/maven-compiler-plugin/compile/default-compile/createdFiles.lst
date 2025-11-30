@@ -10,6 +10,7 @@ com\gpt\server\Service\Impl\FileUploadServiceImpl.class
 com\gpt\server\Vo\Usage.class
 com\gpt\server\Common\Result.class
 com\gpt\server\Service\CategoryService.class
+com\gpt\server\Config\MinioConfiguration.class
 com\gpt\server\Mapper\PaperQuestionMapper.class
 com\gpt\server\Vo\ResponseMessage.class
 com\gpt\server\Controller\QuestionBatchController.class
@@ -34,10 +35,13 @@ com\gpt\server\Service\ExamRecordService.class
 com\gpt\server\Mapper\QuestionChoiceMapper.class
 com\gpt\server\Service\AIService.class
 com\gpt\server\Vo\PageResult.class
+com\gpt\server\Exception\GlobalExceptionHandler.class
+com\gpt\server\Config\RedeisConfig.class
 com\gpt\server\Service\Impl\BannerServiceImpl.class
 com\gpt\server\Vo\AiGenerateRequestVo.class
 com\gpt\server\Service\Impl\PaperServiceImpl.class
 com\gpt\server\Controller\VideoAdminController.class
+com\gpt\server\Vo\QuestionQueryVo.class
 com\gpt\server\Mapper\VideoLikeMapper.class
 com\gpt\server\Vo\PaperVo.class
 com\gpt\server\Service\KimiGradingService.class
@@ -72,6 +76,7 @@ com\gpt\server\Utils\ExcelUtil$1.class
 com\gpt\server\Service\Impl\QuestionCategoryServiceImpl.class
 com\gpt\server\Vo\ChatChoice.class
 com\gpt\server\Entity\Notice.class
+com\gpt\server\Config\properties\MinioProperties.class
 com\gpt\server\Service\PaperService.class
 com\gpt\server\Service\UserService.class
 com\gpt\server\Vo\AiPaperVo.class
@@ -80,6 +85,7 @@ com\gpt\server\Mapper\UserMapper.class
 com\gpt\server\Controller\NoticeController.class
 com\gpt\server\Vo\ChatResponse.class
 com\gpt\server\Mapper\VideoViewMapper.class
+com\gpt\server\Utils\RedisUtils.class
 com\gpt\server\Service\KimiAiService.class
 com\gpt\server\Controller\VideoController.class
 com\gpt\server\Entity\Exam.class

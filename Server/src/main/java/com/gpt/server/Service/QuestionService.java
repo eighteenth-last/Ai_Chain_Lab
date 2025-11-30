@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gpt.server.Entity.Question;
 import com.gpt.server.Vo.QuestionQueryVo;
 
+import java.util.List;
+
 /**
  * @BelongsProject: Server
  * @BelongsPackage: com.gpt.server.Service
@@ -25,4 +27,13 @@ public interface QuestionService extends IService<Question> {
 
     // 创建题目并保存
     void saveQuestion(Question question);
+
+    // 修改题目
+    void updateQuestion(Long id, Question question);
+
+    // 删除题目
+    void removeQuestion(Long id);
+
+    // 查询最热门的题目
+    List<Question> queryPopularList(Integer size);
 }

@@ -12,11 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @BelongsProject: Server
@@ -135,6 +131,9 @@ public class QuestionController {
     public Result<Question> updateQuestion(
             @Parameter(description = "题目ID") @PathVariable Long id, 
             @RequestBody Question question) {
+        questionService.updateQuestion(id, question);
+        log.info("更新题目成功，返回数据为{}", question);
+
         return Result.success(null);
     }
     
@@ -157,11 +156,9 @@ public class QuestionController {
     public Result<String> deleteQuestion(
             @Parameter(description = "题目ID") @PathVariable Long id) {
         // 根据操作结果返回不同的响应
-        if (true) {
-            return Result.success("题目删除成功");
-        } else {
-            return Result.error("题目删除失败");
-        }
+        questionService.removeQuestion(id);
+        log.info("删除id为{}的题目成功！！！",id);
+        return Result.success("题目删除成功");
     }
     
     /**
@@ -258,8 +255,11 @@ public class QuestionController {
     public Result<List<Question>> getPopularQuestions(
             @Parameter(description = "返回题目数量", example = "10") @RequestParam(defaultValue = "10") Integer size) {
 
+
+        List<Question> popularQuestions=questionService.queryPopularList(size);
+        log.info("获取热门题目成功，数量：{}，具体数据为：{}", popularQuestions.size(), popularQuestions);
         // 异常处理：记录日志并返回友好的错误信息
-        return Result.error("获取热门题目失败");
+        return Result.success(popularQuestions);
 
     }
 
@@ -285,4 +285,4 @@ public class QuestionController {
         return Result.error("刷新热门题目缓存失败");
     }
 
-} 
+}
