@@ -10,5 +10,5 @@ package com.gpt.server.Service;
  * @Version: 1.0
  */
 
-public interface KimiGradingService {
+public interface DeepSeekGradingService {
 } 

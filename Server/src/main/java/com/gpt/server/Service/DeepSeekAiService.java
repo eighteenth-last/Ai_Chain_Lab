@@ -8,6 +8,6 @@ package com.gpt.server.Service;
  * @Description: KimiAi服务接口
  * @Version: 1.0
  */
-public interface KimiAiService {
+public interface DeepSeekAiService {
 
 } 

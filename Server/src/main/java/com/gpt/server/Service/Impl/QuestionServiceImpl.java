@@ -13,14 +13,19 @@ import com.gpt.server.Mapper.QuestionAnswerMapper;
 import com.gpt.server.Mapper.QuestionChoiceMapper;
 import com.gpt.server.Mapper.QuestionMapper;
 import com.gpt.server.Service.QuestionService;
+import com.gpt.server.Utils.ExcelUtil;
 import com.gpt.server.Utils.RedisUtils;
+import com.gpt.server.Vo.QuestionImportVo;
 import com.gpt.server.Vo.QuestionQueryVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -288,6 +293,72 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 给题目进行选项和答案赋值即可
         fullQuestionChoicesAndAnswers(popularQuestion);
         return popularQuestion;
+    }
+
+    // 文件预览
+    @Override
+    public List<QuestionImportVo> previewExcel(MultipartFile file) throws IOException {
+        // 文件校验
+        if(file.isEmpty()){
+            throw new RuntimeException("生成需要预览的的Excel文件为空");
+        }
+        String filename = file.getOriginalFilename();
+        if(!filename.endsWith("xls")&& !filename.endsWith("xlsx")){
+            throw new RuntimeException("请上传正确的Excel文件");
+        }
+        // ExcelUtils 工具类解析
+        List<QuestionImportVo> questionImportVoList = ExcelUtil.parseExcel(file);
+
+        return questionImportVoList;
+    }
+
+    // 批量导入题目
+    @Override
+    public String importQuestions(List<QuestionImportVo> questions) {
+        // 进行传入预览集合的非空判断
+        if (ObjectUtils.isEmpty(questions)){
+            return "传入的题目集合为空";
+        }
+        // 定义服务降级的代码结构
+        int successNumber = 0;
+        for (QuestionImportVo questionImportVo:questions){
+            try {
+                // 循环中，进行vo-》question 以及题目保存业务的调用
+                Question question=new Question();
+                BeanUtils.copyProperties(questionImportVo,question);  // 属性复制 参数1 源对象 ，参数2 目标对象 ，要求：属性名称一致
+
+                if ("CHOICE".equals(question.getType())){
+                    List<QuestionChoice> questionChoices=new ArrayList<>(questionImportVo.getChoices().size());
+                    for(QuestionImportVo.ChoiceImportDto importVoChoice:questionImportVo.getChoices()){
+                        QuestionChoice questionChoice=new QuestionChoice();
+                        questionChoice.setContent(importVoChoice.getContent());
+                        questionChoice.setIsCorrect(importVoChoice.getIsCorrect());
+                        questionChoice.setSort(importVoChoice.getSort());
+                        questionChoices.add(questionChoice);
+                    }
+                    question.setChoices(questionChoices);
+                }
+                QuestionAnswer questionAnswer=new QuestionAnswer();
+                // 如果是判断题，questionAnswer.getAnswer() true false 是小写，数据库中的QuestionAnswer 答案必须是大写 前端忽略大小写
+                if("JUDGE".equals(question.getType())){
+                    questionAnswer.setAnswer(questionImportVo.getAnswer().toUpperCase());
+                }else{
+                    questionAnswer.setAnswer(questionImportVo.getAnswer());
+                }
+                questionAnswer.setKeywords(questionImportVo.getKeywords());
+                question.setAnswer(questionAnswer);
+
+                // 调用保存业务
+                saveQuestion(question);
+
+                successNumber++;
+            }catch (Exception  e){
+                log.error("保存{}题目的时候失败", questionImportVo.getTitle());
+            }
+        }
+        // 拼接反馈的结构：题目批量导入的接口调用结束：共计导入：%s 条，成功导入：%s 条，失败导入：%s 条
+        String result=String.format("题目批量导入的接口调用结束：共计导入：%s 条，成功导入：%s 条，失败导入：%s 条", questions.size(), successNumber, questions.size() - successNumber);
+        return result;
     }
 
     // 异步方法，在题目

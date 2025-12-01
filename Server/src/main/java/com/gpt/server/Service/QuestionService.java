@@ -3,8 +3,11 @@ package com.gpt.server.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gpt.server.Entity.Question;
+import com.gpt.server.Vo.QuestionImportVo;
 import com.gpt.server.Vo.QuestionQueryVo;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,4 +39,10 @@ public interface QuestionService extends IService<Question> {
 
     // 查询最热门的题目
     List<Question> queryPopularList(Integer size);
+
+    // 根据文件生成预览集合
+    List<QuestionImportVo> previewExcel(MultipartFile file) throws IOException;
+
+    // 批量导入题目
+    String importQuestions(List<QuestionImportVo> questions);
 }
