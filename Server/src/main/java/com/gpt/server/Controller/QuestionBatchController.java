@@ -92,10 +92,10 @@ public class QuestionBatchController {
     @PostMapping("/ai-generate")  // 处理POST请求
     @Operation(summary = "AI智能生成题目", description = "使用AI技术根据指定主题和要求智能生成题目，支持预览后再决定是否导入")  // API描述
     public Result<List<QuestionImportVo>> generateQuestionsByAi(
-            @RequestBody @Validated AiGenerateRequestVo request) {
-
-
-       return Result.error("AI生成题目失败");
+            @RequestBody @Validated AiGenerateRequestVo request) throws InterruptedException {
+        List<QuestionImportVo>  questionImportVoList=questionService.generateQuestionsByAi(request);
+        log.info("生成的题目列表,题目为{}，希望生成的数量为{}，最终生成的题目数量为{}：",request.getTopic(),request.getCount(),questionImportVoList.size());
+       return Result.success(questionImportVoList);
     }
     
     /**

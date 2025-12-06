@@ -1,5 +1,8 @@
 package com.gpt.server.Service.Impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,12 +15,15 @@ import com.gpt.server.Mapper.PaperQuestionMapper;
 import com.gpt.server.Mapper.QuestionAnswerMapper;
 import com.gpt.server.Mapper.QuestionChoiceMapper;
 import com.gpt.server.Mapper.QuestionMapper;
+import com.gpt.server.Service.DeepSeekAiService;
 import com.gpt.server.Service.QuestionService;
 import com.gpt.server.Utils.ExcelUtil;
 import com.gpt.server.Utils.RedisUtils;
+import com.gpt.server.Vo.AiGenerateRequestVo;
 import com.gpt.server.Vo.QuestionImportVo;
 import com.gpt.server.Vo.QuestionQueryVo;
 import lombok.extern.slf4j.Slf4j;
+import netscape.javascript.JSObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +61,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Autowired
     private PaperQuestionMapper paperQuestionMapper;
-    
+
+    @Autowired
+    private DeepSeekAiService deepSeekAiService;
+
     // 查询题目列表分页，分步查询
     @Override
     public void queryQuestionListPage(Page<Question> questionPage, QuestionQueryVo questionQueryVo) {
@@ -359,6 +368,55 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 拼接反馈的结构：题目批量导入的接口调用结束：共计导入：%s 条，成功导入：%s 条，失败导入：%s 条
         String result=String.format("题目批量导入的接口调用结束：共计导入：%s 条，成功导入：%s 条，失败导入：%s 条", questions.size(), successNumber, questions.size() - successNumber);
         return result;
+    }
+
+    // Ai生成题目
+    @Override
+    public List<QuestionImportVo> generateQuestionsByAi(AiGenerateRequestVo request) throws InterruptedException {
+        // 生成对应的提示词
+        String prompt = deepSeekAiService.buildPrompt(request);
+        log.info("Ai出题的条件为：{}，对应的提示词为{}",request,prompt);
+        // 调用Ai获取结果
+        String response = deepSeekAiService.callDeepSeekAi(prompt);
+        // 进行结果的解析
+        // 判断开始和结束的字符的位置
+        int startIndex = response.indexOf("```json");
+        int endIndex = response.lastIndexOf("```");
+        if (startIndex != -1 && endIndex != -1 &&  startIndex < endIndex) {
+            // 数据结构是正常的
+            String resultJson = response.substring(startIndex + 7, endIndex);
+            JSONObject jsonObject = JSONObject.parseObject(resultJson);
+            JSONArray questions = jsonObject.getJSONArray("questions");
+            List<QuestionImportVo> questionImportVoList =new ArrayList<>();
+            for (int i = 0; i < questions.size(); i++) {
+                JSONObject questionsJSONObject = questions.getJSONObject(i);
+                QuestionImportVo questionImportVo = new QuestionImportVo();
+                questionImportVo.setTitle(questionsJSONObject.getString("title"));
+                questionImportVo.setType(questionsJSONObject.getString("type"));
+                questionImportVo.setMulti(questionsJSONObject.getBoolean("multi"));
+                questionImportVo.setCategoryId(request.getCategoryId());
+                questionImportVo.setDifficulty(questionsJSONObject.getString("difficulty"));
+                questionImportVo.setScore(questionsJSONObject.getInteger("score"));
+                questionImportVo.setAnalysis(questionsJSONObject.getString("analysis"));
+                questionImportVo.setAnswer(questionsJSONObject.getString("answer"));
+                // 选择题的选项
+                if ("CHOICE".equals(questionImportVo.getType())){
+                    JSONArray choices = questionsJSONObject.getJSONArray("choices");
+                    List<QuestionImportVo.ChoiceImportDto> choiceImportDtoList = new ArrayList<>(choices.size());
+                    for (int j = 0; j < choices.size(); j++) {
+                        QuestionImportVo.ChoiceImportDto choiceImportDto = new QuestionImportVo.ChoiceImportDto();
+                        choiceImportDto.setContent(choices.getJSONObject(j).getString("content"));
+                        choiceImportDto.setIsCorrect(choices.getJSONObject(j).getBoolean("isCorrect"));
+                        choiceImportDto.setSort(choices.getJSONObject(j).getInteger("sort"));
+                        choiceImportDtoList.add(choiceImportDto);
+                    }
+                    questionImportVo.setChoices(choiceImportDtoList);
+                }
+                questionImportVoList.add(questionImportVo);
+            }
+            return questionImportVoList;
+        }
+        throw new RuntimeException("ai生成题目json数据结构错误，无法正常解析！数据为：%s".formatted(response));
     }
 
     // 异步方法，在题目

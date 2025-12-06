@@ -72,6 +72,14 @@ knife4j:
 minio:
   end-point: http://localhost:9000
   access-key: minioadmin
-  secret-key: minioadmin123
+  secret-key: minioadmin
   bucket-name: onlinebucket
   region: cn-beijing-1
+
+deepseek:
+  api:
+    api-key: sk_4Xd90eblJNpkp5-R0gCKUUHllN8siV2IDCYK_llfh9Q
+    model: deepseek/deepseek-v3.2
+    uri: https://api.ppinfra.com
+    max-tokens: 10000
+    temperature: 0.3

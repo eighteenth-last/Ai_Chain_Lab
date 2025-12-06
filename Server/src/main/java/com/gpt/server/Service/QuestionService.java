@@ -3,6 +3,7 @@ package com.gpt.server.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gpt.server.Entity.Question;
+import com.gpt.server.Vo.AiGenerateRequestVo;
 import com.gpt.server.Vo.QuestionImportVo;
 import com.gpt.server.Vo.QuestionQueryVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,4 +46,7 @@ public interface QuestionService extends IService<Question> {
 
     // 批量导入题目
     String importQuestions(List<QuestionImportVo> questions);
+
+    // 使用AI生成题目
+    List<QuestionImportVo> generateQuestionsByAi(AiGenerateRequestVo request) throws InterruptedException;
 }
