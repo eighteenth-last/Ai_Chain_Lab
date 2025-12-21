@@ -53,4 +53,32 @@
 
         ORDER BY qs.create_time DESC
     </select>
+
+    <resultMap id="questionDetailMap" type="com.gpt.server.Entity.Question">
+        <id column="id" property="id" />
+        <association property="answer" javaType="com.gpt.server.Entity.QuestionAnswer">
+            <id column="qas_id" property="id" />
+            <result column="qas_question_id" property="questionId"/>
+            <result column="qas_create_time" property="createTime"/>
+            <result column="qas_update_time" property="updateTime"/>
+        </association>
+        <collection property="choices" ofType="com.gpt.server.Entity.QuestionChoice" notNullColumn="qcs_id">
+            <id column="qcs_id" property="id" />
+            <result column="qcs_question_id" property="questionId"/>
+            <result column="qcs_create_time" property="createTime"/>
+            <result column="qcs_update_time" property="updateTime"/>
+        </collection>
+    </resultMap>
+
+    <!-- 多表查询 -->
+    <select id="selectQuestionByPaperId" resultMap="questionDetailMap">
+        SELECT pq.score paper_score,qs.*,qas.id qas_id,qas.question_id qas_question_id,qas.answer,qas.keywords,qas.create_time qas_create_time,qas.update_time qas_update_time,qcs.id qcs_id,qcs.question_id qcs_question_id,qcs.content,qcs.is_correct,qcs.sort,qcs.create_time qcs_create_time,qcs.update_time qcs_update_time FROM paper_question pq
+        JOIN questions qs ON pq.question_id = qs.id
+        JOIN question_answers qas ON qas.question_id = qs.id
+        LEFT JOIN question_choices qcs ON qcs.question_id = qs.id
+        AND qcs.is_deleted =0
+        WHERE pq.paper_id = #{paperId} AND pq.is_deleted =0
+        AND qs.is_deleted =0 AND qas.is_deleted =0
+        ORDER BY qcs.sort ASC;
+    </select>
 </mapper>

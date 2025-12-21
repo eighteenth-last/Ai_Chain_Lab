@@ -82,4 +82,4 @@ deepseek:
     model: deepseek/deepseek-v3.2
     uri: https://api.ppinfra.com
     max-tokens: 10000
-    temperature: 0.3
+    temperature: 0.4

@@ -545,13 +545,18 @@ const loadPaperDataForEdit = async () => {
     const paperData = res.data
     
     // 1. 回填表单信息，同时填充手动和AI两个表单
-    manualForm.value.name = paperData.name
-    manualForm.value.description = paperData.description
-    manualForm.value.duration = paperData.duration || 60
-    
-    aiForm.value.name = paperData.name
-    aiForm.value.description = paperData.description
-    aiForm.value.duration = paperData.duration || 60
+    if (paperData) {
+      manualForm.value.name = paperData.name
+      manualForm.value.description = paperData.description
+      manualForm.value.duration = paperData.duration || 60
+      
+      aiForm.value.name = paperData.name
+      aiForm.value.description = paperData.description
+      aiForm.value.duration = paperData.duration || 60
+    } else {
+      ElMessage.error('加载试卷信息失败：未找到指定试卷')
+      return
+    }
 
     // 2. 回填题目选择和分数
     if (paperData.questions && paperData.questions.length > 0) {

@@ -27,4 +27,6 @@ public interface QuestionMapper extends BaseMapper<Question> {
     // 定义一个查询方法，用mybatis-plus的分页插件
     // 返回必须为Ipage
     IPage<Question> selectQuestionPage(IPage<Question> page, @Param("questionQueryVo") QuestionQueryVo questionQueryVo);
+
+    List<Question> selectQuestionByPaperId(Long paperId);
 } 
