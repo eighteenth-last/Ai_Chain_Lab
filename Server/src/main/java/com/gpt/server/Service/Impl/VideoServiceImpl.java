@@ -191,17 +191,13 @@ public class VideoServiceImpl implements VideoService {
         }
         
         try {
-            // 上传视频文件
-            Map<String, Object> videoUploadResult = null; //todo: 文件上传以后开放即可！
-                    // fileUploadService.uploadFile(videoFile, "videos/original/");
-            video.setFileUrl(videoUploadResult.get("url").toString());
+            String videoUrl = fileUploadService.uploadFile("videos/original", videoFile);
+            video.setFileUrl(videoUrl);
             video.setFileSize(videoFile.getSize());
             
-            // 上传封面文件（可选）
             if (coverFile != null && !coverFile.isEmpty()) {
-                Map<String, Object> coverUploadResult = null; //todo： 文件上传以后开放即可
-                        // fileUploadService.uploadFile(coverFile, "videos/covers/");
-                video.setCoverUrl(coverUploadResult.get("url").toString());
+                String coverUrl = fileUploadService.uploadFile("videos/covers", coverFile);
+                video.setCoverUrl(coverUrl);
             }
             
             // 设置用户投稿默认值
@@ -250,17 +246,13 @@ public class VideoServiceImpl implements VideoService {
         }
         
         try {
-            // 上传视频文件 todo: 文件上传实现以后开放即可！
-            Map<String, Object> videoUploadResult = null;
-                    //fileUploadService.uploadFile(videoFile, "videos/original/");
-            video.setFileUrl(videoUploadResult.get("url").toString());
+            String videoUrl = fileUploadService.uploadFile("videos/original", videoFile);
+            video.setFileUrl(videoUrl);
             video.setFileSize(videoFile.getSize());
             
-            // 上传封面文件（可选）
             if (coverFile != null && !coverFile.isEmpty()) {
-                Map<String, Object> coverUploadResult = null;
-                       // fileUploadService.uploadFile(coverFile, "videos/covers/");
-                video.setCoverUrl(coverUploadResult.get("url").toString());
+                String coverUrl = fileUploadService.uploadFile("videos/covers", coverFile);
+                video.setCoverUrl(coverUrl);
             }
             
             // 设置管理员上传默认值
@@ -286,6 +278,51 @@ public class VideoServiceImpl implements VideoService {
         }
         
         return result;
+    }
+    
+    @Override
+    @Transactional
+    public void updateVideoCoverByAdmin(Long videoId, MultipartFile coverFile, Long adminId) {
+        if (coverFile == null || coverFile.isEmpty()) {
+            throw new RuntimeException("封面文件不能为空");
+        }
+        
+        Video video = videoMapper.selectById(videoId);
+        if (video == null) {
+            throw new RuntimeException("视频不存在");
+        }
+        
+        try {
+            String coverUrl = fileUploadService.uploadFile("videos/covers", coverFile);
+            video.setCoverUrl(coverUrl);
+            video.setUpdatedAt(LocalDateTime.now());
+            videoMapper.updateById(video);
+        } catch (Exception e) {
+            throw new RuntimeException("封面上传失败：" + e.getMessage());
+        }
+    }
+    
+    @Override
+    @Transactional
+    public void updateVideoByAdmin(Video video, Long adminId) {
+        if (video == null || video.getId() == null) {
+            throw new RuntimeException("视频ID不能为空");
+        }
+        
+        Video existingVideo = videoMapper.selectById(video.getId());
+        if (existingVideo == null) {
+            throw new RuntimeException("视频不存在");
+        }
+        
+        existingVideo.setTitle(video.getTitle());
+        existingVideo.setDescription(video.getDescription());
+        existingVideo.setCategoryId(video.getCategoryId());
+        existingVideo.setTags(video.getTags());
+        existingVideo.setUploaderName(video.getUploaderName());
+        existingVideo.setDuration(video.getDuration());
+        existingVideo.setUpdatedAt(LocalDateTime.now());
+        
+        videoMapper.updateById(existingVideo);
     }
 
     @Override

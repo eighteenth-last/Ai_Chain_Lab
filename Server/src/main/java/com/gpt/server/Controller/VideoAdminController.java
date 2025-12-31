@@ -23,6 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/admin/videos")
+@CrossOrigin(origins = "*")
 @Tag(name = "视频管理(管理端)", description = "管理端视频相关操作，包括视频管理、审核、统计等功能")
 public class VideoAdminController {
 
@@ -88,6 +89,41 @@ public class VideoAdminController {
         
         Map<String, Object> result = videoService.uploadVideoByAdmin(video, videoFile, coverFile, adminId);
         return Result.success(result);
+    }
+    
+    /**
+     * 更新视频信息
+     * @param videoId 视频ID
+     * @param video 视频基本信息
+     * @return 操作结果
+     */
+    @PutMapping("/{videoId}")
+    @Operation(summary = "更新视频信息", description = "管理员编辑视频的基础信息")
+    public Result<Void> updateVideo(
+            @Parameter(description = "视频ID") @PathVariable Long videoId,
+            @RequestBody Video video) {
+        
+        Long adminId = 1L;
+        video.setId(videoId);
+        videoService.updateVideoByAdmin(video, adminId);
+        return Result.success(null);
+    }
+
+    /**
+     * 更新视频封面
+     * @param videoId 视频ID
+     * @param coverFile 新封面文件
+     * @return 操作结果
+     */
+    @PostMapping("/{videoId}/cover")
+    @Operation(summary = "更新视频封面", description = "管理员为视频更新封面图片")
+    public Result<Void> updateVideoCover(
+            @Parameter(description = "视频ID") @PathVariable Long videoId,
+            @Parameter(description = "封面文件") @RequestParam("coverFile") MultipartFile coverFile) {
+        
+        Long adminId = 1L;
+        videoService.updateVideoCoverByAdmin(videoId, coverFile, adminId);
+        return Result.success(null);
     }
 
     /**

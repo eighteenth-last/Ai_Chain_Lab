@@ -3,11 +3,14 @@ package com.gpt.server.Controller;
 
 import com.gpt.server.Common.Result;
 import com.gpt.server.Entity.ExamRecord;
+import com.gpt.server.Service.ExamService;
 import com.gpt.server.Vo.StartExamVo;
 import com.gpt.server.Vo.SubmitAnswerVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +23,15 @@ import java.util.List;
  * @Description: Exam控制器
  * @Version: 1.0
  */
+@Slf4j
 @RestController  // REST控制器，返回JSON数据
 @RequestMapping("/api/exams")  // 考试API路径前缀
 @CrossOrigin(origins = "*")  // 允许跨域访问
 @Tag(name = "考试管理", description = "考试流程相关操作，包括开始考试、答题提交、AI批阅、成绩查询等功能")  // Swagger API分组
 public class ExamController {
 
+    @Autowired
+    private ExamService examService;
 
     /**
      * 开始考试 - 创建新的考试记录
@@ -36,7 +42,9 @@ public class ExamController {
     @Operation(summary = "开始考试", description = "学生开始考试，创建考试记录并返回试卷内容")  // API描述
     public Result<ExamRecord> startExam(@RequestBody StartExamVo startExamVo) {
         // TODO: 从SecurityContext获取当前登录用户ID  // 暂时使用固定用户ID
-        return Result.success(null, "考试开始成功");
+        ExamRecord examRecord = examService.startExam(startExamVo);
+        log.info("开始考试，考试记录为：{}",examRecord);
+        return Result.success(examRecord, "考试开始成功");
     }
 
     /**
@@ -48,7 +56,9 @@ public class ExamController {
     @Operation(summary = "提交考试答案", description = "学生提交考试答案，系统记录答题情况")  // API描述
     public Result<Void> submitAnswers(
             @Parameter(description = "考试记录ID") @PathVariable Integer examRecordId, 
-            @RequestBody List<SubmitAnswerVo> answers) {
+            @RequestBody List<SubmitAnswerVo> answers) throws InterruptedException {
+        examService.submitExam(examRecordId, answers);
+        log.info("提交答案成功，考试记录ID为：{}", examRecordId);
         return Result.success("答案提交成功");
     }
 
@@ -59,8 +69,9 @@ public class ExamController {
     @PostMapping("/{examRecordId}/grade")  // 处理POST请求
     @Operation(summary = "AI自动批阅", description = "使用AI技术自动批阅试卷，特别是简答题的智能评分")  // API描述
     public Result<ExamRecord> gradeExam(
-            @Parameter(description = "考试记录ID") @PathVariable Integer examRecordId) {
-
+            @Parameter(description = "考试记录ID") @PathVariable Integer examRecordId) throws InterruptedException {
+        ExamRecord examRecord = examService.graderExam(examRecordId);
+        log.info("AI自动批阅成功，考试记录为：{}", examRecord);
         return Result.success(null, "试卷批阅完成");
     }
 
@@ -71,7 +82,9 @@ public class ExamController {
     @Operation(summary = "查询考试记录详情", description = "获取指定考试记录的详细信息，包括答题情况和得分")  // API描述
     public Result<ExamRecord> getExamRecordById(
             @Parameter(description = "考试记录ID") @PathVariable Integer id) {
-        return Result.success(null);
+        ExamRecord examRecord = examService.getExamRecordById(id);
+        log.info("获取考试记录详情成功，考试记录为：{}", examRecord);
+        return Result.success(examRecord);
     }
 
     /**

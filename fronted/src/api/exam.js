@@ -21,7 +21,8 @@ export function submitAnswers(examRecordId, data) {
   return request({
     url: `/api/exams/${examRecordId}/submit`,  // 添加/api前缀
     method: 'post',
-    data
+    data,
+    timeout: 60000
   })
 }
 
@@ -29,7 +30,8 @@ export function submitAnswers(examRecordId, data) {
 export function gradeExam(examRecordId) {
   return request({
     url: `/api/exams/${examRecordId}/grade`,  // 添加/api前缀
-    method: 'post'
+    method: 'post',
+    timeout: 60000
   })
 }
 

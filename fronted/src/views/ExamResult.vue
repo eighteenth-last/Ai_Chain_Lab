@@ -167,7 +167,7 @@
           @click="downloadResult"
           icon="Download"
         >
-          �� 下载成绩单
+          下载成绩单
         </el-button>
       </div>
 

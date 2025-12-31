@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <el-dialog v-model="uploadDialogVisible" title="上传视频" width="800px" :close-on-click-modal="false">
+    <el-dialog v-model="uploadDialogVisible" :title="dialogTitle" width="800px" :close-on-click-modal="false">
       <el-form :model="uploadForm" :rules="uploadRules" ref="uploadFormRef" label-width="100px">
         <el-form-item label="视频标题" prop="title"><el-input v-model="uploadForm.title" placeholder="请输入视频标题" /></el-form-item>
         <el-form-item label="视频描述" prop="description"><el-input v-model="uploadForm.description" type="textarea" :rows="3" placeholder="请输入视频描述" /></el-form-item>
@@ -154,10 +154,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh, Edit, Delete, Plus, VideoPlay, Check, Close, Bottom, UploadFilled, Picture } from '@element-plus/icons-vue'
-import { getVideosForAdmin, uploadVideoByAdmin, auditVideo, offlineVideo, deleteVideo } from '../api/video'
+import { getVideosForAdmin, uploadVideoByAdmin, updateVideoByAdmin, updateVideoCoverByAdmin, auditVideo, offlineVideo, deleteVideo } from '../api/video'
 import { getVideoCategories, getVideoCategoryTree } from '../api/videoCategory'
 
 const searchForm = reactive({ keyword: '', status: '', uploaderType: '', categoryId: '' })
@@ -173,11 +173,21 @@ const uploadFormRef = ref()
 const videoUploadRef = ref()
 const coverUploadRef = ref()
 const uploadForm = reactive({ title: '', description: '', categoryId: '', tags: '', uploaderName: '', duration: null, videoFile: null, coverFile: null })
+const isEdit = ref(false)
+const currentEditVideoId = ref(null)
+const dialogTitle = computed(() => (isEdit.value ? '编辑视频' : '上传视频'))
+const validateVideoFile = (rule, value, callback) => {
+  if (!isEdit.value && !uploadForm.videoFile) {
+    callback(new Error('请上传视频文件'))
+  } else {
+    callback()
+  }
+}
 const uploadRules = {
   title: [{ required: true, message: '请输入视频标题', trigger: 'blur' }],
   categoryId: [{ required: true, message: '请选择分类', trigger: 'change' }],
   uploaderName: [{ required: true, message: '请输入上传者名称', trigger: 'blur' }],
-  videoFile: [{ required: true, message: '请上传视频文件', trigger: 'change' }]
+  videoFile: [{ validator: validateVideoFile, trigger: 'change' }]
 }
 const previewDialogVisible = ref(false)
 const currentPreviewVideo = ref({})
@@ -219,7 +229,12 @@ const handleSearch = () => { pagination.current = 1; getVideoList(); }
 const resetSearch = () => { Object.assign(searchForm, { keyword: '', status: '', uploaderType: '', categoryId: '' }); handleSearch(); }
 const handleSizeChange = (size) => { pagination.size = size; getVideoList(); }
 const handleCurrentChange = (current) => { pagination.current = current; getVideoList(); }
-const showUploadDialog = () => { uploadDialogVisible.value = true; }
+const showUploadDialog = () => {
+  isEdit.value = false
+  currentEditVideoId.value = null
+  resetUploadForm()
+  uploadDialogVisible.value = true
+}
 
 const handleVideoFileChange = (file) => {
   uploadForm.videoFile = file.raw
@@ -243,15 +258,31 @@ const handleUpload = async () => {
     if (valid) {
       uploading.value = true
       try {
-        const formData = new FormData()
-        Object.keys(uploadForm).forEach(key => formData.append(key, uploadForm[key]))
-        await uploadVideoByAdmin(formData)
-        ElMessage.success('视频上传成功')
+        if (isEdit.value) {
+          const data = {
+            title: uploadForm.title,
+            description: uploadForm.description,
+            categoryId: uploadForm.categoryId,
+            tags: uploadForm.tags,
+            uploaderName: uploadForm.uploaderName,
+            duration: uploadForm.duration
+          }
+          await updateVideoByAdmin(currentEditVideoId.value, data)
+          if (uploadForm.coverFile) {
+            await updateVideoCoverByAdmin(currentEditVideoId.value, uploadForm.coverFile)
+          }
+          ElMessage.success('视频更新成功')
+        } else {
+          const formData = new FormData()
+          Object.keys(uploadForm).forEach(key => formData.append(key, uploadForm[key]))
+          await uploadVideoByAdmin(formData)
+          ElMessage.success('视频上传成功')
+        }
         uploadDialogVisible.value = false
         resetUploadForm()
         getVideoList()
       } catch (error) {
-        console.error('视频上传失败：', error)
+        console.error('视频保存失败：', error)
       } finally {
         uploading.value = false
       }
@@ -269,7 +300,27 @@ const resetUploadForm = () => {
 }
 
 const previewVideo = (video) => { currentPreviewVideo.value = video; previewDialogVisible.value = true; }
-const editVideo = (video) => { ElMessage.info('编辑功能开发中...'); }
+const editVideo = (video) => {
+  isEdit.value = true
+  currentEditVideoId.value = video.id
+  if (uploadFormRef.value) uploadFormRef.value.clearValidate()
+  if (videoUploadRef.value) videoUploadRef.value.clearFiles()
+  if (coverUploadRef.value) coverUploadRef.value.clearFiles()
+  Object.assign(uploadForm, {
+    title: video.title || '',
+    description: video.description || '',
+    categoryId: video.categoryId || '',
+    tags: video.tags || '',
+    uploaderName: video.uploaderName || '',
+    duration: video.duration || null,
+    videoFile: null,
+    coverFile: null
+  })
+  tagList.value = video.tags ? video.tags.split(',').filter(tag => tag.trim()) : []
+  currentTag.value = ''
+  categoryPath.value = video.categoryId || []
+  uploadDialogVisible.value = true
+}
 
 const auditVideoAction = async (video, status) => {
   try {

@@ -39,9 +39,9 @@ public class DeepSeekAiServiceImpl implements DeepSeekAiService {
     @Override
     public String buildSummary(Integer totalScore, Integer maxScore, Integer questionCount, Integer correctCount) throws InterruptedException {
         //1. 构建提示词
-        String summaryPrompt  = buildSummaryPrompt(totalScore,maxScore,questionCount,correctCount);
+        String buildAiResult  = buildAiResult(totalScore,maxScore,questionCount,correctCount);
         //2. 调用kimiai
-        String summary = callDeepSeekAi(summaryPrompt);
+        String summary = callDeepSeekAi(buildAiResult);
         //3. 结果解析
         return summary;
     }
@@ -319,7 +319,7 @@ public class DeepSeekAiServiceImpl implements DeepSeekAiService {
     /**
      * 构建判卷提示词
      */
-    private String buildGradingPrompt(Question question, String userAnswer, Integer maxScore) {
+    public String buildGradingPrompt(Question question, String userAnswer, Integer maxScore) {
         StringBuilder prompt = new StringBuilder();
         prompt.append("你是一名专业的考试阅卷老师，请对以下题目进行判卷：\n\n");
 
@@ -368,7 +368,7 @@ public class DeepSeekAiServiceImpl implements DeepSeekAiService {
     /**
      * 构建考试总评提示词
      */
-    private String buildSummaryPrompt(Integer totalScore, Integer maxScore, Integer questionCount, Integer correctCount) {
+    public String buildAiResult(Integer totalScore, Integer maxScore, Integer questionCount, Integer correctCount) {
         double percentage = (double) totalScore / maxScore * 100;
 
         StringBuilder prompt = new StringBuilder();

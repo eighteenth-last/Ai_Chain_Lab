@@ -3,11 +3,11 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\Video
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\ExamRankingVo.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\QuestionBatchController.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\ChatMessage.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Config\properties\DeepSeekProperties.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\QuestionCategoryServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\ExamRecordController.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\ChatChoice.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\UserServiceImpl.java
-R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\KimiAiServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\ExamService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\AnswerRecord.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Config\ApiDocumentationRunner.java
@@ -17,17 +17,22 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\C
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\VideoServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\ResponseMessage.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\PaperQuestionMapper.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\GradingResult.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Config\MinioConfiguration.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\VideoMapper.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Common\CacheConstants.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\AnswerRecordServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\VideoCategoryService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\AiGenerateRequestVo.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\ChatResponse.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\DeepSeekAiService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\BannerController.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\FileUploadServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\UserService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\VideoLike.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\AiPaperVo.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\AnswerRecordService.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\PaperQuestionServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\Paper.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\ExamController.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\LoginRequestVo.java
@@ -36,6 +41,7 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\BaseE
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\CategoryService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\ExamRecordServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Common\Result.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\DeepSeekAiServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\VideoCategory.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\BannerService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\CategoryMapper.java
@@ -56,7 +62,7 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\Notic
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\VideoLikeMapper.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\PaperQuestion.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Config\properties\MinioProperties.java
-R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\KimiGradingServiceImpl.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\DeepSeekGradingService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\QuestionAnswer.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\FileUploadService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\QuestionService.java
@@ -69,7 +75,7 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\Video
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Vo\RuleVo.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\NoticeService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\PaperController.java
-R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\KimiGradingService.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\DeepSeekGradingServiceImpl.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\VideoAdminController.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\ExamRecordMapper.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Utils\ExcelUtil.java
@@ -87,6 +93,7 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\StatsController.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\AIService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\Impl\ExamServiceImpl.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\PaperQuestionService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Utils\RedisUtils.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\QuestionAnswerMapper.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Utils\IpUtils.java
@@ -109,5 +116,5 @@ R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\Quest
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\QuestionCategoryService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Entity\Exam.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Controller\QuestionController.java
-R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Service\KimiAiService.java
 R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Mapper\BannerMapper.java
+R:\Code_Repository\Ai_Chain_Lab\Server\src\main\java\com\gpt\server\Config\WebClientConfiguration.java

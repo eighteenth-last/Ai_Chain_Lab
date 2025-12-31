@@ -3,4 +3,27 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gpt.server.Mapper.ExamRecordMapper">
+    <select id="queryRankList" resultType="com.gpt.server.Vo.ExamRankingVo">
+        SELECT
+        ers.id,
+        ers.student_name,
+        ers.score,
+        ers.exam_id,
+        ppr.name paper_name,
+        ppr.total_score paper_total_score,
+        ers.start_time,
+        ers.end_time,
+        TIMESTAMPDIFF(MINUTE,ers.start_time,ers.end_time) duration
+        FROM exam_records ers
+            JOIN paper ppr ON ers.exam_id = ppr.id
+            WHERE ers.status = '已批阅' AND ers.is_deleted=0
+            AND ppr.is_deleted=0
+            <if test="paperId != null">
+                AND ppr.id = #{paperId}
+            </if>
+            ORDER BY ers.score DESC,duration ASC
+            <if test="limit != null and limit >0">
+                LIMIT #{limit};
+            </if>
+    </select>
 </mapper>

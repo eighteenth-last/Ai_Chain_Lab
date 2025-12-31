@@ -18,8 +18,8 @@ logging:
 spring:
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 30MB   # 修改上传大小限制
+      max-file-size: 200MB
+      max-request-size: 210MB
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8  # 时区
@@ -78,7 +78,7 @@ minio:
 
 deepseek:
   api:
-    api-key: sk_4Xd90eblJNpkp5-R0gCKUUHllN8siV2IDCYK_llfh9Q
+    api-key: your-api-key
     model: deepseek/deepseek-v3.2
     uri: https://api.ppinfra.com
     max-tokens: 10000

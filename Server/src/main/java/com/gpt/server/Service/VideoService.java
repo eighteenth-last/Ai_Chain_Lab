@@ -100,6 +100,21 @@ public interface VideoService {
      * @return 上传结果
      */
     Map<String, Object> uploadVideoByAdmin(Video video, MultipartFile videoFile, MultipartFile coverFile, Long adminId);
+
+    /**
+     * 管理员更新视频封面
+     * @param videoId 视频ID
+     * @param coverFile 封面文件
+     * @param adminId 管理员ID
+     */
+    void updateVideoCoverByAdmin(Long videoId, MultipartFile coverFile, Long adminId);
+
+    /**
+     * 管理员更新视频信息
+     * @param video 视频基本信息（必须包含ID）
+     * @param adminId 管理员ID
+     */
+    void updateVideoByAdmin(Video video, Long adminId);
     
     /**
      * 审核视频

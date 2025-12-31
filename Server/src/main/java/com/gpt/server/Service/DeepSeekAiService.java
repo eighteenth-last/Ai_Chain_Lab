@@ -57,4 +57,22 @@ public interface DeepSeekAiService {
      * @return
      */
     List<QuestionImportVo> aiGenerateQuestions(AiGenerateRequestVo request) throws InterruptedException;
+
+    /**
+     * 生成简答题的提示词的方法
+     * @param question
+     * @param userAnswer
+     * @return
+     */
+    String buildGradingPrompt(Question question, String userAnswer, Integer maxScore);
+
+    /**
+     * 封装ai生成结果
+     * @param totalScore
+     * @param maxScore
+     * @param questionCount
+     * @param correctCount
+     * @return
+     */
+    String buildAiResult (Integer totalScore, Integer maxScore, Integer questionCount, Integer correctCount);
 } 

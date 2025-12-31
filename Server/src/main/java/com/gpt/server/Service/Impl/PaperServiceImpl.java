@@ -186,7 +186,15 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
     // 根据id查询试卷
     @Override
     public Paper getPaperById(Integer id) {
+        if (id == null) {
+            log.error("根据id查询试卷失败，id为空");
+            throw new RuntimeException("试卷ID不能为空");
+        }
         Paper paper = getById(id);
+        if (paper == null) {
+            log.warn("根据id查询试卷失败，未找到id为{}的试卷", id);
+            return null;
+        }
         List<Question> questionList = questionMapper.selectQuestionByPaperId(Long.valueOf(id));
         // 校验题目数据是否为空
         if(ObjectUtils.isEmpty(questionList)){

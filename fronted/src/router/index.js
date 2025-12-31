@@ -122,6 +122,12 @@ const routes = [
     component: () => import('../views/Practice.vue'),
     meta: { title: '刷题练习' }
   },
+  {
+    path: '/analysis',
+    name: 'Analysis',
+    component: () => import('../views/Analysis.vue'),
+    meta: { title: 'AI分析' }
+  },
   // 3分钟技术短视频相关路由
   {
     path: '/videos',

@@ -126,6 +126,37 @@ export function uploadVideoByAdmin(formData) {
 }
 
 /**
+ * 管理员更新视频信息
+ * @param {number} id - 视频ID
+ * @param {Object} data - 视频基础信息
+ */
+export function updateVideoByAdmin(id, data) {
+  return request({
+    url: `/api/admin/videos/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * 管理员更新视频封面
+ * @param {number} id - 视频ID
+ * @param {File} coverFile - 新封面文件
+ */
+export function updateVideoCoverByAdmin(id, coverFile) {
+  const formData = new FormData()
+  formData.append('coverFile', coverFile)
+  return request({
+    url: `/api/admin/videos/${id}/cover`,
+    method: 'post',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
+/**
  * 审核视频
  * @param {number} videoId - 视频ID
  * @param {number} status - 审核状态（1-通过，2-拒绝）
