@@ -1,6 +1,7 @@
 server:
   port: 8080
 
+
 # 日志配置 - 精简模式
 logging:
   level:
