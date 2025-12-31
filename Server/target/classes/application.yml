@@ -78,7 +78,7 @@ minio:
 
 deepseek:
   api:
-    api-key: sk_4Xd90eblJNpkp5-R0gCKUUHllN8siV2IDCYK_llfh9Q
+    api-key: your-api-key
     model: deepseek/deepseek-v3.2
     uri: https://api.ppinfra.com
     max-tokens: 10000
